@@ -97,6 +97,10 @@ const ImageCoding = () => {
         return matrixString.split('\n').map(row => row.split(',').map(Number));
     };
 
+    const formatMatrix = (matrix) => {
+        return matrix ? matrix.map((row) => row.join(',')).join('\n') : '';
+    };
+
     return (
         <div className="container">
             <form onSubmit={(e) => e.preventDefault()}>
@@ -208,6 +212,13 @@ const ImageCoding = () => {
                     <button type="button" onClick={handleEncode}>Send</button>
                     <button type="button" onClick={handleDecode}>Decode</button>
                 </div>
+                
+                {useAutoG && gMatrix && (
+                    <div className="group">
+                        <label>Auto-generated G matrix</label>
+                        <textarea id = "gMatrix" value={formatMatrix(gMatrix)} rows={k} />
+                    </div>
+                )}
             </form>
 
         </div>

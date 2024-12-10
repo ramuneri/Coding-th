@@ -89,6 +89,10 @@ const TextCoding = () => {
         return parsed;
     };
 
+    const formatMatrix = (matrix) => {
+        return matrix ? matrix.map((row) => row.join(',')).join('\n') : '';
+    };
+
     return (
         <div className="container">
             <h2>Text Encoder/Decoder</h2>
@@ -96,63 +100,28 @@ const TextCoding = () => {
             <form onSubmit={(e) => e.preventDefault()}>
                 <div className="group">
                     <label htmlFor="pe">Error Probability (p<sub>e</sub>):</label>
-                    <input
-                        type="number"
-                        id="pe"
-                        value={pe}
-                        onChange={(e) => setPe(e.target.value)}
-                        step="0.0001"
-                        min="0"
-                        max="1"
-                        required
-                    />
+                    <input type="number" id="pe" value={pe} onChange={(e) => setPe(e.target.value)} step="0.0001" min="0" max="1" required />
                 </div>
                 <div className="group">
                     <label htmlFor="n">Code length (n):</label>
-                    <input
-                        type="number"
-                        id="n"
-                        value={n}
-                        onChange={(e) => setN(e.target.value)}
-                        required
-                    />
+                    <input type="number" id="n" value={n} onChange={(e) => setN(e.target.value)} required />
                 </div>
                 <div className="group">
                     <label htmlFor="k">Code dimension / chunk Size (k):</label>
-                    <input
-                        type="number"
-                        id="k"
-                        value={k}
-                        onChange={(e) => setK(e.target.value)}
-                        required
-                    />
+                    <input type="number" id="k" value={k} onChange={(e) => setK(e.target.value)} required />
                 </div>
                 <div className="group">
                     <label htmlFor="text">Text:</label>
-                    <textarea
-                        id="text"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                        rows = "3"
-                        required
-                    />
+                    <textarea id="text" value={text} onChange={(e) => setText(e.target.value)} rows = "3" required />
                 </div>
 
                 <div className="radio-group">
                     <label>
-                        <input
-                            type="radio"
-                            checked={useAutoG}
-                            onChange={() => setUseAutoG(true)}
-                        />
+                        <input type="radio" checked={useAutoG} onChange={() => setUseAutoG(true)} />
                         Auto-generate G matrix
                     </label>
                     <label>
-                        <input
-                            type="radio"
-                            checked={!useAutoG}
-                            onChange={() => setUseAutoG(false)}
-                        />
+                        <input type="radio" checked={!useAutoG} onChange={() => setUseAutoG(false)} />
                         Provide custom G matrix
                     </label>
                 </div>
@@ -177,6 +146,12 @@ const TextCoding = () => {
             </form>
 
             <form>
+                {useAutoG && gMatrix && (
+                    <div className="group">
+                        <label>Auto-generated G matrix</label>
+                        <textarea id = "gMatrix" value={formatMatrix(gMatrix)} rows={k} />
+                    </div>
+                )}
                 <div className="group">
                     <label>Received text:</label>
                     <textarea 

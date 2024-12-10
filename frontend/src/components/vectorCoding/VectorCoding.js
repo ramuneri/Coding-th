@@ -111,7 +111,7 @@ const VectorCoding = () => {
         }
     };
 
-    // Clled if user modifies received vector
+    // Called if user modifies received vector
     // e - event object from the input element
     // e.target.value - takes new value, removes not binary
     const handleReceivedVectorChange = (e) => {
@@ -123,6 +123,10 @@ const VectorCoding = () => {
     const parseCustomGMatrix = (matrixString) => {
         const parsed = matrixString.split('\n').map((row) => row.split(',').map(Number));
         return parsed;
+    };
+
+    const formatMatrix = (matrix) => {
+        return matrix ? matrix.map((row) => row.join(',')).join('\n') : '';
     };
 
     return (
@@ -173,7 +177,6 @@ const VectorCoding = () => {
                         />
                     </div>
                 )}
-
                 <div className="buttons-container">
                     <button type="button" onClick={handleEncode}>Send</button>
                     <button type="button" onClick={handleDecode}>Decode</button>
@@ -182,6 +185,15 @@ const VectorCoding = () => {
 
             {/* Results after encoding and decoding */}
             <form>
+
+                {/* Shows auto-generate G matrix if user selects it */}
+                {useAutoG && gMatrix && (
+                    <div className="group">
+                        <label>Auto-generated G matrix</label>
+                        <textarea id = "gMatrix" value={formatMatrix(gMatrix)} rows={k} />
+                    </div>
+                )}
+
                 <div className="group">
                     <label>Encoded vector (c):</label>
                     <input type="text" value={encodedVector?.join('') || ''} readOnly />
@@ -206,7 +218,8 @@ const VectorCoding = () => {
                     <label>Primary vector (m'):</label>
                     <input type="text" value={primaryVector?.join('') || ''} readOnly />
                 </div>
-
+                
+                {/* Informs on decoding success */}
                 {successMessage && (
                     <div className="success-message">
                         <label>{successMessage}</label>
