@@ -1,0 +1,6 @@
+@LinearCodesApi_HostAddress = http://localhost:5183
+
+GET {{LinearCodesApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

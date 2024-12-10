@@ -1,0 +1,58 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# ---- Frontend (React) ----
+# dependencies
+/frontend/node_modules
+/frontend/.pnp
+/frontend.pnp.js
+
+# testing
+/frontend/coverage
+
+# production
+/frontend/build
+
+# misc
+/frontend/.DS_Store
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+
+# ---- Backend (C#) ----
+# User-specific files
+/backend/.vs
+/backend/*.user
+/backend/*.suo
+/backend/*.userosscache
+/backend/*.sln.docstates
+
+# Logs
+/backend/logs
+/backend/*.log
+
+# Auto-generated files
+/backend/bin/
+/backend/obj/
+/backend/*.dll
+/backend/*.exe
+/backend/*.pdb
+/backend/*.cache
+/backend/*.ide
+
+# Visual Studio Code
+/backend/.vscode/
+/.vscode/
+
+# Rider or IntelliJ files
+.idea/
+
+# Misc
+/backend/.DS_Store
+
+# Don't check in compiled libraries
+/backend/packages/
