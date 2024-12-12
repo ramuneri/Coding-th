@@ -89,7 +89,7 @@ namespace backend.Services
         /** Converts text into binary form and splits the binary data into chunks of size k
         @param text to convert, size of binary chunks to split
         @returns binary chunks representing text */
-        public List<List<int>> ConvertTextToBinaryChunks(string text, int k)
+        public (List<List<int>>, List<int> remainingBits) ConvertTextToBinaryChunks(string text, int k)
         {
             byte[] textBytes = Encoding.UTF8.GetBytes(text); // Each character to bytes
             List<int> binaryData = new List<int>();
@@ -100,15 +100,34 @@ namespace backend.Services
             }
 
             List<List<int>> binaryChunks = new List<List<int>>(); // Chunk the binary data
+            List<int> remainingBits = new List<int>(); // For remaining bits if left
 
             for (int i = 0; i < binaryData.Count; i += k)
             {
                 List<int> chunk = binaryData.Skip(i).Take(k).ToList();
-                while (chunk.Count < k) chunk.Add(0);
+                if (chunk.Count < k)
+                {
+                    remainingBits = chunk;
+                    break;
+                }
+
                 binaryChunks.Add(chunk);
             }
 
-            return binaryChunks;
+
+
+            if (remainingBits.Count > 0)
+            {
+                Console.WriteLine($"RemainingBits count = {remainingBits.Count}");
+                Console.WriteLine(string.Join("", remainingBits)); // Joins the remaining bits for display
+            }
+            else
+            {
+                Console.WriteLine($"No remaining bits. RemainingBits count = {remainingBits.Count}");
+            }
+
+
+            return (binaryChunks, remainingBits);
         }
 
         /** Sends binary chunks (vectors) via tunnel and makes random mistakes
@@ -148,13 +167,17 @@ namespace backend.Services
         /** Gets primary chunks (binary vectors)
         @param length of primary vector, chunks (vectors)
         @returns primary vectors */
-        public List<List<int>> GetPrimaryChunks (int k, List<List<int>> chunks)
+        public List<List<int>> GetPrimaryChunks (int k, List<List<int>> chunks, List<int> remainingChunks)
         {
             List<List<int>> primaryChunks = new List<List<int>>();
             foreach (var chunk in chunks)
             {
                 List<int> primaryChunk = _vectorService.GetPrimaryVector(k, chunk);
                 primaryChunks.Add(primaryChunk);
+            }
+            if (remainingChunks.Count > 0)
+            {
+                primaryChunks.Add(remainingChunks);
             }
 
             return primaryChunks;

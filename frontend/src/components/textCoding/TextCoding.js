@@ -14,6 +14,7 @@ const TextCoding = () => {
     const [decodedText, setDecodedText] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
     const [receivedChunks, setReceivedChunks] = useState(null);
+    const [remainingBits, setRemainingBits] = useState(null);
 
     const handleEncode = async () => {
         let gMatrixToSend = useAutoG ? null : parseCustomGMatrix(customGMatrix);
@@ -47,11 +48,12 @@ const TextCoding = () => {
             const response = await axios.post('http://localhost:5000/api/text/encode', textData, {
                 headers: { 'Content-Type': 'application/json' },
             });
-            const { gMatrix, receivedText, receivedChunks } = response.data;
+            const { gMatrix, receivedText, receivedChunks, remainingBits } = response.data;
 
             setGMatrix(gMatrix);
             setReceivedText(receivedText);
             setReceivedChunks(receivedChunks);
+            setRemainingBits(remainingBits);
         } catch (error) {
             console.error('Error encoding text:', error);
         }
@@ -70,6 +72,7 @@ const TextCoding = () => {
             receivedText: receivedText,
             gMatrix: gMatrix,
             receivedChunks: receivedChunks,
+            remainingBits: remainingBits,
         };
 
         try {
@@ -149,25 +152,30 @@ const TextCoding = () => {
                 {useAutoG && gMatrix && (
                     <div className="group">
                         <label>Auto-generated G matrix</label>
-                        <textarea id = "gMatrix" value={formatMatrix(gMatrix)} rows={k} />
+                        <textarea
+                        id = "gMatrix"
+                        value={formatMatrix(gMatrix)}
+                        rows={k}
+                        readOnly />
                     </div>
                 )}
                 <div className="group">
                     <label>Received text:</label>
                     <textarea 
                         value={receivedText || ''} 
-                        readOnly 
                         rows="3" 
-                        style={{ width: '100%' }} 
+                        style={{ width: '100%' }}
+                        readOnly 
+             
                     />
                 </div>
                 <div className="group">
                     <label>Decoded text:</label>
                     <textarea 
                         value={decodedText || ''} 
-                        readOnly 
                         rows="3" 
                         style={{ width: '100%' }} 
+                        readOnly 
                     />
                 </div>
             </form>

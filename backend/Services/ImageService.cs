@@ -18,7 +18,7 @@ namespace backend.Services
         /** Convers image to its binary form and splits into chunks
         @param path to file, size of chunks
         @returns binary chunks */
-        public List<List<int>> ConvertImageToBinaryChunks(string filePath, int k)
+        public (List<List<int>>, List<int> remainingBits) ConvertImageToBinaryChunks(string filePath, int k)
         {
             // Saves all binary
             List<int> binaryData = new List<int>();
@@ -45,15 +45,19 @@ namespace backend.Services
 
             // Divide into chunks
             var binaryChunks = new List<List<int>>();
+            var remainingBits = new List<int>();
 
             for (int i = 0; i < binaryData.Count; i += k)
             {
                 List<int> chunk = binaryData.Skip(i).Take(k).ToList();
-                while (chunk.Count < k) chunk.Add(0);
+                if (chunk.Count < k) {
+                    remainingBits = chunk;
+                    break;
+                }
                 binaryChunks.Add(chunk);
             }
 
-            return binaryChunks;
+            return (binaryChunks, remainingBits);
         }
 
         /** Tries decoding binary image chunks that came from tunnel

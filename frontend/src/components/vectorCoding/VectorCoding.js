@@ -235,7 +235,7 @@ const VectorCoding = () => {
                 {useAutoG && gMatrix && (
                     <div className="group">
                         <label>Auto-generated G matrix</label>
-                        <textarea id = "gMatrix" value={formatMatrix(gMatrix)} rows={k} />
+                        <textarea id = "gMatrix" value={formatMatrix(gMatrix)} rows={k} readOnly/>
                     </div>
                 )}
 

@@ -14,9 +14,10 @@ const ImageCoding = () => {
     const [receivedChunks, setReceivedChunks] = useState(null);
     const [decodedImage, setDecodedImage] = useState(null);
     const [gMatrix, setGMatrix] = useState(null);
-
+    const [remainingBits, setRemainingBits] = useState(null);
     const [width, setWidth] = useState(null);
     const [height, setHeight] = useState(null);
+    
 
     const handleEncode = async () => {
         if (!primaryImage || !primaryImage.type.includes('bmp')) {
@@ -42,11 +43,12 @@ const ImageCoding = () => {
             const response = await axios.post('http://localhost:5000/api/image/encode', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            const { gMatrix, receivedImage, receivedChunks, width, height } = response.data;
+            const { gMatrix, receivedImage, receivedChunks, remainingBits, width, height } = response.data;
 
             setGMatrix(gMatrix);
             setReceivedImage(`data:image/bmp;base64,${receivedImage}`);
             setReceivedChunks(receivedChunks);
+            setRemainingBits(remainingBits);
             setWidth(width);
             setHeight(height);
         } catch (error) {
@@ -63,6 +65,7 @@ const ImageCoding = () => {
         const decodeImageData = {
             gMatrix: gMatrix,
             receivedChunks: receivedChunks,
+            remainingBits: remainingBits,
             width: width,
             height: height,
         };
@@ -204,6 +207,7 @@ const ImageCoding = () => {
                             onChange={(e) => setCustomGMatrix(e.target.value)}
                             placeholder={`Format example:\n1,0,0\n0,1,1`}
                             rows="5"
+                            readOnly
                         />
                     </div>
                 )}
@@ -216,7 +220,7 @@ const ImageCoding = () => {
                 {useAutoG && gMatrix && (
                     <div className="group">
                         <label>Auto-generated G matrix</label>
-                        <textarea id = "gMatrix" value={formatMatrix(gMatrix)} rows={k} />
+                        <textarea id = "gMatrix" value={formatMatrix(gMatrix)} rows={k} readOnly/>
                     </div>
                 )}
             </form>

@@ -61,10 +61,10 @@ namespace backend.Controllers
                 }
 
                 // Encode the image
-                var binaryChunks = _imageService.ConvertImageToBinaryChunks(tempFilePath, k);
+                var (binaryChunks, remainingBits) = _imageService.ConvertImageToBinaryChunks(tempFilePath, k);
                 var encodedChunks = _textService.GetEncodedChunks(n, k, gMatrix, binaryChunks);
                 var receivedChunks = _textService.GetReceivedChunks(n, pe, encodedChunks);
-                var primaryReceivedChunks = _textService.GetPrimaryChunks(k, receivedChunks);
+                var primaryReceivedChunks = _textService.GetPrimaryChunks(k, receivedChunks, remainingBits);
 
                 // Convert chunks back to image
                 Image<Rgb24>? receivedImage = _imageService.ConvertChunksToImage(primaryReceivedChunks, width, height);
@@ -82,6 +82,7 @@ namespace backend.Controllers
                     GMatrix = gMatrix,
                     ReceivedImage = receivedImageBase64,
                     ReceivedChunks = receivedChunks,
+                    RemainingBits = remainingBits,
                     Width = width,
                     Height = height,
                 });
@@ -100,6 +101,7 @@ namespace backend.Controllers
             {
                 var gMatrix = request.gMatrix;
                 var receivedChunks = request.ReceivedChunks;
+                var remainingBits = request.RemainingBits;
                 int width = request.Width;
                 int height = request.Height;
 
@@ -113,7 +115,7 @@ namespace backend.Controllers
                 var hMatrix = _vectorService.GenerateMatrixH(gMatrix);
 
                 var decodedChunks = _imageService.DecodeImageChunks(receivedChunks, gMatrix, hMatrix);
-                var primaryDecodedChunks = _textService.GetPrimaryChunks(k, decodedChunks);
+                var primaryDecodedChunks = _textService.GetPrimaryChunks(k, decodedChunks, remainingBits);
                 Image<Rgb24>? decodedImage = _imageService.ConvertChunksToImage(primaryDecodedChunks, width, height);
 
                 // Convert decoded image to Base64
@@ -149,6 +151,7 @@ namespace backend.Controllers
         {
             required public List<List<int>> gMatrix { get; set; }
             required public List<List<int>> ReceivedChunks { get; set; }
+            required public List<int> RemainingBits { get; set; }
             required public int Width { get; set; }
             required public int Height { get; set; }
         }
