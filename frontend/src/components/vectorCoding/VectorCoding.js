@@ -112,17 +112,15 @@ const VectorCoding = () => {
     };
 
     // Called if user modifies received vector
-    // e - event object from the input element
-    // e.target.value - takes new value, removes not binary
     const handleReceivedVectorChange = (e) => {
-        const updatedReceivedVector = e.target.value.replace(/[^01]/g, '');
-        setReceivedVector(updatedReceivedVector);
+        const updatedReceivedVector = e.target.value.replace(/[^01]/g, ''); // Keep only 0s and 1s
+        setReceivedVector(updatedReceivedVector); // Save as a string
     
         // Recalculate errors only if the lengths match
-        if (encodedVector && updatedReceivedVector.length === encodedVector.length) {
+        if (encodedVector && updatedReceivedVector && updatedReceivedVector.length === encodedVector.length) {
             const errorData = calculateErrors(
                 encodedVector,
-                updatedReceivedVector.split('').map(Number)
+                updatedReceivedVector.split('').map(Number) // Convert to a list for calculation
             );
             setErrorCount(errorData.errorCount);
             setErrorPositions(errorData.errorPositions);
@@ -136,15 +134,19 @@ const VectorCoding = () => {
         setDecodedVector(null);
         setPrimaryVector(null);
         setSuccessMessage('');
-
+    
         console.log('Encoded Vector:', encodedVector);
-        console.log('Updated Received Vector:', updatedReceivedVector.split('').map(Number));
-        
-
+        console.log('Updated Received Vector (as string):', updatedReceivedVector);
     };
+    
+    
     
 
     const calculateErrors = (encoded, received) => {
+        console.log('In calculateErrors:\n');
+        console.log('encoded = ', encoded, ', received = ', received);
+
+
         if (encoded.length !== received.length) {
             return { errorCount: null, errorPositions: [] };
         }
@@ -239,6 +241,7 @@ const VectorCoding = () => {
                     </div>
                 )}
 
+                {/* Other calculations */}
                 <div className="group">
                     <label>Encoded vector (c):</label>
                     <input type="text" value={encodedVector?.join('') || ''} readOnly />
