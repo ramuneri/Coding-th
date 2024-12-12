@@ -117,7 +117,52 @@ const VectorCoding = () => {
     const handleReceivedVectorChange = (e) => {
         const updatedReceivedVector = e.target.value.replace(/[^01]/g, '');
         setReceivedVector(updatedReceivedVector);
+    
+        // Recalculate errors only if the lengths match
+        if (encodedVector && updatedReceivedVector.length === encodedVector.length) {
+            const errorData = calculateErrors(
+                encodedVector,
+                updatedReceivedVector.split('').map(Number)
+            );
+            setErrorCount(errorData.errorCount);
+            setErrorPositions(errorData.errorPositions);
+        } else {
+            // Reset error count and positions if lengths mismatch
+            setErrorCount('-');
+            setErrorPositions('-');
+        }
+    
+        // Reset decoding-related states
+        setDecodedVector(null);
+        setPrimaryVector(null);
+        setSuccessMessage('');
+
+        console.log('Encoded Vector:', encodedVector);
+        console.log('Updated Received Vector:', updatedReceivedVector.split('').map(Number));
+        
+
     };
+    
+
+    const calculateErrors = (encoded, received) => {
+        if (encoded.length !== received.length) {
+            return { errorCount: null, errorPositions: [] };
+        }
+    
+        let errorCount = 0;
+        const errorPositions = [];
+    
+        for (let i = 0; i < encoded.length; i++) {
+            if (encoded[i] !== received[i]) {
+                errorCount++;
+                errorPositions.push(i);
+            }
+        }
+    
+        return { errorCount, errorPositions };
+    };
+    
+    
 
     // This is called if user wants auto-generated G matrix
     const parseCustomGMatrix = (matrixString) => {
