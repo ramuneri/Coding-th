@@ -89,7 +89,7 @@ namespace backend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -133,7 +133,7 @@ namespace backend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
                 return StatusCode(500, "Internal server error");
             }
         }

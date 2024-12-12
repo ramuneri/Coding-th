@@ -11,6 +11,7 @@ namespace backend.Services
             _vectorService = vectorService;
         }
 
+
         /** Encodes vectors
         @param cade parameters - n and k, generating matrix, vectors to encode
         @returns encoded vector*/
@@ -25,6 +26,7 @@ namespace backend.Services
 
             return encodedChunks;
         }
+
 
         /** Decodes vectors
         @param generating matrix, control matrix, vectors to decode
@@ -45,6 +47,7 @@ namespace backend.Services
 
             return decodedChunks;
         }
+
 
         /** Decodes vector
         @param vector to decode, generating matrix, control matrix, reduced standard table
@@ -86,6 +89,7 @@ namespace backend.Services
             return receivedVector;
         }
 
+
         /** Converts text into binary form and splits the binary data into chunks of size k
         @param text to convert, size of binary chunks to split
         @returns binary chunks representing text */
@@ -114,21 +118,9 @@ namespace backend.Services
                 binaryChunks.Add(chunk);
             }
 
-
-
-            if (remainingBits.Count > 0)
-            {
-                Console.WriteLine($"RemainingBits count = {remainingBits.Count}");
-                Console.WriteLine(string.Join("", remainingBits)); // Joins the remaining bits for display
-            }
-            else
-            {
-                Console.WriteLine($"No remaining bits. RemainingBits count = {remainingBits.Count}");
-            }
-
-
             return (binaryChunks, remainingBits);
         }
+
 
         /** Sends binary chunks (vectors) via tunnel and makes random mistakes
         @param size of vector, error probability, binary chunks to send
@@ -147,6 +139,7 @@ namespace backend.Services
             return receivedChunks;
         }
 
+
         /** Sends vector via tunnel and makes random mistakes
         @param encoded vector length, error probability, vector that will be send
         @returns vectors with (probably) mistakes */
@@ -163,6 +156,7 @@ namespace backend.Services
 
             return receivedVector;
         }
+
 
         /** Gets primary chunks (binary vectors)
         @param length of primary vector, chunks (vectors)
@@ -183,6 +177,7 @@ namespace backend.Services
             return primaryChunks;
         }
         
+
         /** Converts binary data back to text
         @param binary chunks
         @returns text */
@@ -204,6 +199,7 @@ namespace backend.Services
             return decodedText;
         }
 
+
         /** Convers byte to its binary value
         @param byte
         @returns its binary representation */
@@ -217,6 +213,7 @@ namespace backend.Services
 
             return binary;
         }
+
 
         /** Convers binary value to byte 
         @param binary value

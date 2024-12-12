@@ -93,10 +93,6 @@ namespace backend.Controllers
                 // Decodes the received vector
                 List<int> decodedVector = _vectorService.DecodeVector(receivedVector, gMatrix, hMatrix);
 
-                // Calculate error count and positions
-                int errorCount = _vectorService.CountErrors(encodedVector, receivedVector);
-                List<int> errorPositions = _vectorService.GetErrorPositions(encodedVector, receivedVector);
-
                 // Calculate the primary vector based on the decoded vector
                 int primaryVectorLength = gMatrix.Count; // primary vector is of size k (number of G rows)
                 List<int> primaryVector = _vectorService.GetPrimaryVector(primaryVectorLength, decodedVector);
@@ -107,8 +103,6 @@ namespace backend.Controllers
 
                 return Ok(new
                 {
-                    ErrorCount = errorCount,
-                    ErrorPositions = errorPositions,
                     DecodedVector = decodedVector,
                     PrimaryVector = primaryVector,
                     SuccessMessage = successMessage
@@ -116,11 +110,10 @@ namespace backend.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in Decode: {ex.Message}");
+                Console.WriteLine(ex);
                 return StatusCode(500, "An unexpected error occurred during decoding.");
             }
         }
-
 
         public class VectorRequest
         {
