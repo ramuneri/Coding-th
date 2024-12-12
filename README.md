@@ -8,6 +8,5 @@ Running project locally:
 -----------------------
 
 Notes:
-* If received vector is edited, number and positions of errors changes after pressing "Decode";
+* User is presented a number and positions of errors between encoded vector and received vector;
 * The bigger image the longer it takes to send/decode it;
-* When image is lower quality, decoding efficiency is more visible;

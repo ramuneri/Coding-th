@@ -4,7 +4,7 @@ import './VectorCoding.css';
 
 const VectorCoding = () => {
     const [pe, setPe] = useState('0.1');
-    const [n, setN] = useState('7');
+    const [n, setN] = useState('8');
     const [k, setK] = useState('4');
     const [m, setM] = useState('1111');
     const [useAutoG, setUseAutoG] = useState(true);
@@ -87,7 +87,12 @@ const VectorCoding = () => {
             return;
         }
 
-        // Data to send to backend for decoding
+        if (receivedVector.length !== encodedVector.length) {
+            alert('Please encode the vector first.');
+            return;
+        }
+
+        // Data to send to the backend for decoding
         const receivedVectorData = {
             encodedVector: encodedVector,
             receivedVector: receivedVector.split('').map(Number),
@@ -95,14 +100,11 @@ const VectorCoding = () => {
             gMatrix: gMatrix,
         };
 
-
         // Sending data and setting received values
         try {
             const response = await axios.post('http://localhost:5000/api/vector/decode', receivedVectorData);
-            const { errorCount, errorPositions, decodedVector, primaryVector, successMessage } = response.data;
+            const { decodedVector, primaryVector, successMessage } = response.data;
 
-            setErrorCount(errorCount !== null ? errorCount : 0);
-            setErrorPositions(errorCount > 0 ? errorPositions : '-');
             setDecodedVector(decodedVector);
             setPrimaryVector(primaryVector);
             setSuccessMessage(successMessage);
@@ -112,43 +114,24 @@ const VectorCoding = () => {
     };
 
     // Called if user modifies received vector
-    // e - event object from the input element
-    // e.target.value - takes new value, removes not binary
     const handleReceivedVectorChange = (e) => {
-        const updatedReceivedVector = e.target.value.replace(/[^01]/g, '');
+        const updatedReceivedVector = e.target.value.replace(/[^01]/g, '').slice(0, n);;
         setReceivedVector(updatedReceivedVector);
     
-        // Recalculate errors only if the lengths match
-        if (encodedVector && updatedReceivedVector.length === encodedVector.length) {
-            const errorData = calculateErrors(
-                encodedVector,
-                updatedReceivedVector.split('').map(Number)
-            );
+        if (encodedVector && updatedReceivedVector && updatedReceivedVector.length === encodedVector.length) {
+            const errorData = calculateErrors(encodedVector, updatedReceivedVector.split('').map(Number) );
             setErrorCount(errorData.errorCount);
             setErrorPositions(errorData.errorPositions);
         } else {
-            // Reset error count and positions if lengths mismatch
             setErrorCount('-');
             setErrorPositions('-');
         }
-    
-        // Reset decoding-related states
         setDecodedVector(null);
         setPrimaryVector(null);
         setSuccessMessage('');
-
-        console.log('Encoded Vector:', encodedVector);
-        console.log('Updated Received Vector:', updatedReceivedVector.split('').map(Number));
-        
-
     };
     
-
     const calculateErrors = (encoded, received) => {
-        if (encoded.length !== received.length) {
-            return { errorCount: null, errorPositions: [] };
-        }
-    
         let errorCount = 0;
         const errorPositions = [];
     
@@ -162,8 +145,6 @@ const VectorCoding = () => {
         return { errorCount, errorPositions };
     };
     
-    
-
     // This is called if user wants auto-generated G matrix
     const parseCustomGMatrix = (matrixString) => {
         const parsed = matrixString.split('\n').map((row) => row.split(',').map(Number));
@@ -239,6 +220,7 @@ const VectorCoding = () => {
                     </div>
                 )}
 
+                {/* Other calculations */}
                 <div className="group">
                     <label>Encoded vector (c):</label>
                     <input type="text" value={encodedVector?.join('') || ''} readOnly />
