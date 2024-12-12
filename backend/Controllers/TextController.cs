@@ -29,10 +29,10 @@ namespace backend.Controllers
 
                 gMatrix = gMatrix ?? _vectorService.GenerateMatrixG(n, k);
 
-                var textChunks = _textService.ConvertTextToBinaryChunks(text, k);
+                var (textChunks, remainingBits) = _textService.ConvertTextToBinaryChunks(text, k);
                 var encodedChunks = _textService.GetEncodedChunks(n, k, gMatrix, textChunks);
                 var receivedChunks = _textService.GetReceivedChunks(n, pe, encodedChunks);
-                var primaryReceivedChunks = _textService.GetPrimaryChunks(k, receivedChunks);
+                var primaryReceivedChunks = _textService.GetPrimaryChunks(k, receivedChunks, remainingBits);
                 string receivedText = _textService.ConvertChunksToText(primaryReceivedChunks);
 
                 return Ok(new
@@ -40,6 +40,7 @@ namespace backend.Controllers
                     GMatrix = gMatrix,
                     ReceivedText = receivedText,
                     ReceivedChunks = receivedChunks,
+                    RemainingBits = remainingBits,
                 });
             }
             catch (Exception ex)
@@ -59,6 +60,7 @@ namespace backend.Controllers
                 string receivedText = request.ReceivedText;
                 List<List<int>> gMatrix = request.gMatrix;
                 List<List<int>> receivedChunks = request.ReceivedChunks;
+                List<int> remainingBits = request.RemainingBits;
     
                 if (receivedText == null)
                 {
@@ -74,7 +76,7 @@ namespace backend.Controllers
                 List<List<int>> hMatrix = _vectorService.GenerateMatrixH(gMatrix);
 
                 var decodedChunks = _textService.GetDecodedChunks(gMatrix, hMatrix, receivedChunks);
-                var primaryDecodedChunks = _textService.GetPrimaryChunks(k, decodedChunks);
+                var primaryDecodedChunks = _textService.GetPrimaryChunks(k, decodedChunks, remainingBits);
                 string decodedText = _textService.ConvertChunksToText(primaryDecodedChunks);
 
                 return Ok(new
@@ -105,5 +107,6 @@ namespace backend.Controllers
         required public string ReceivedText { get; set; }
         required public List<List<int>> gMatrix { get; set; }
         required public List<List<int>> ReceivedChunks { get; set; }
+        required public List<int> RemainingBits { get; set; }
     }
 }
