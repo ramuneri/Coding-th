@@ -7,10 +7,10 @@ A coding theory project leveraging the ASP.NET Core framework with a JavaScript 
 
 
 Running project locally:
-1. Navigate to '...\Linear-codes\backend'
+1. Navigate to '...\Coding-th\backend'
 2. Run 'dotnet build' and 'dotnet run' (or just 'dotnet run')
 
-3. Navigate to '...\Linear-codes\frontend'
+3. Navigate to '...\Coding-th\frontend'
 4. Run 'npm start'
 
 -----------------------
